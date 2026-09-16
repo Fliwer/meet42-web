@@ -40,7 +40,7 @@ export default function ProfilePage() {
             .then((donnees) => setUser(donnees)); // une fois reçu, on stocke dans user → réaffiche la page
     }, []);
 
-     const handleDelete = async () => {
+    const handleDelete = async () => {
         // demande confirmation avant une action qu'on ne peut pas annuler
         const confirmation = window.confirm('Supprimer définitivement ton compte ?');
         if (!confirmation) {
@@ -60,6 +60,12 @@ export default function ProfilePage() {
         router.push('/'); // renvoie vers la page d'accueil
     };
 
+    const handleLogout = () => {
+        localStorage.removeItem('token'); // vide le token — plus besoin de confirmation ni d'appel API, contrairement à la suppression
+        router.push('/'); // redirige vers l'accueil
+    };
+
+
 
     // tant que user est encore null (requête pas terminée), on affiche un message d'attente
     if (!user) {
@@ -71,7 +77,13 @@ export default function ProfilePage() {
             <h1>Profil</h1>
             <p>Email : {user.email}</p>
             <p>Nom : {user.display_name}</p>
-            <button onClick={handleDelete}>Supprimer mon compte</button>
+            <div>
+                <button onClick={handleDelete}>Supprimer mon compte</button>
+            </div>
+            <div>
+                <button onClick={handleLogout}>Se déconnecter</button>
+            </div>
+
 
         </div>
     );
