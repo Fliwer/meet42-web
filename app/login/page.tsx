@@ -1,8 +1,11 @@
 'use client'
 
 import { useState } from "react"
+import { useRouter } from "next/navigation";
+
 
 export default function LoginPage() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -24,6 +27,7 @@ export default function LoginPage() {
         // donnees.token (2e argument) = la vraie valeur, le token renvoyé par l'API login
         const donnees = await reponse.json();
         localStorage.setItem('token', donnees.token);
+        router.push('/profile');
     };
 
     return (
