@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+
 
 // "type" crée un nom pour une FORME d'objet — pas une vraie valeur, juste une description
 // pour TypeScript, qui vérifiera que "user" a toujours exactement cette forme
@@ -17,6 +19,9 @@ export default function ProfilePage() {
     // sans les < >, TypeScript aurait deviné "toujours null" à partir de l'argument (null)
     // (null) : la valeur de départ, avant que la requête API n'ait répondu
     const [user, setUser] = useState<UserProfile | null>(null);
+
+    const router = useRouter(); // outil pour rediriger l'utilisateur depuis le code, pas juste par un clic sur un lien
+
 
     // useEffect(fonction, [tableau]) : exécute "fonction" au moment choisi
     // le tableau vide [] veut dire "seulement une fois, quand la page apparaît" —
@@ -35,6 +40,27 @@ export default function ProfilePage() {
             .then((donnees) => setUser(donnees)); // une fois reçu, on stocke dans user → réaffiche la page
     }, []);
 
+     const handleDelete = async () => {
+        // demande confirmation avant une action qu'on ne peut pas annuler
+        const confirmation = window.confirm('Supprimer définitivement ton compte ?');
+        if (!confirmation) {
+            return; // l'utilisateur a cliqué "Annuler" : on s'arrête là
+        }
+
+        const token = localStorage.getItem('token');
+
+        await fetch('http://localhost:8080/api/users/me', {
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+            },
+        });
+
+        localStorage.removeItem('token'); // le compte n'existe plus, le token ne sert plus à rien
+        router.push('/'); // renvoie vers la page d'accueil
+    };
+
+
     // tant que user est encore null (requête pas terminée), on affiche un message d'attente
     if (!user) {
         return <p>Chargement...</p>;
@@ -45,6 +71,8 @@ export default function ProfilePage() {
             <h1>Profil</h1>
             <p>Email : {user.email}</p>
             <p>Nom : {user.display_name}</p>
+            <button onClick={handleDelete}>Supprimer mon compte</button>
+
         </div>
     );
 }
