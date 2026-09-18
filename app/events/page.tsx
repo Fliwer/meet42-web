@@ -27,6 +27,13 @@ export default function EventsPage() {
     return (
         <div>
             <h1>Les événements</h1>
+            {events.map((event) => (
+                <div key={event.id}>
+                    <h2>{event.title}</h2>
+                    <p>{event.venue_name}</p>
+                    <p>{event.starts_at}</p>
+                </div>
+            ))}
         </div>
     );
 }
