@@ -9,26 +9,27 @@ export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = async (e: React.SubmitEvent) => {
+        const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
 
         const reponse = await fetch('http://localhost:8080/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // Transforme un objet javascript en TEXTE json
-            body: JSON.stringify({
-                email,
-                password,
-
-            }),
+            body: JSON.stringify({ email, password }),
         });
-        // localStorage = mémoire du navigateur qui survit au rechargement de la page
-        // 'token' (1er argument) = la clé qu'on choisit nous-mêmes pour retrouver cette valeur plus tard
-        // donnees.token (2e argument) = la vraie valeur, le token renvoyé par l'API login
+
         const donnees = await reponse.json();
+
+        // même principe que dans handleJoin : reponse.ok distingue succès (200-299) et échec (401 ici)
+        if (!reponse.ok) {
+            alert("Erreur : " + donnees.error);
+            return; // on ne stocke rien, on ne redirige pas
+        }
+
         localStorage.setItem('token', donnees.token);
         router.push('/profile');
     };
+
 
     return (
 
