@@ -1,6 +1,9 @@
+// :par défaut, un fichier dans app/ est un "server component," qui ne peut pas utiliser useState, useEffect, onClick... 'use client' le transforme en "client component," le seul type autorisé à utiliser ces hooks et gestionnaires d'événements.
 'use client'
 
 import { useState, useEffect } from "react"
+import Link from "next/link"
+
 
 type EventItem = {
     id: string;
@@ -28,11 +31,11 @@ export default function EventsPage() {
         <div>
             <h1>Les événements</h1>
             {events.map((event) => (
-                <div key={event.id}>
+                <Link key={event.id} href={`/events/${event.id}`}>
                     <h2>{event.title}</h2>
                     <p>{event.venue_name}</p>
                     <p>{event.starts_at}</p>
-                </div>
+                </Link>
             ))}
         </div>
     );
