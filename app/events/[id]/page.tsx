@@ -109,7 +109,7 @@ export default function EventGroupsPage({ params }: { params: Promise<{ id: stri
         }
 
         // on arrive ici seulement si reponse.ok était true
-        alert("Tu as rejoint le groupe !");
+        alert(`Tu as rejoint le groupe avec le message : "${introMembre}"`);
     };
 
     // tant que l'événement n'est pas encore arrivé, on affiche un message d'attente
