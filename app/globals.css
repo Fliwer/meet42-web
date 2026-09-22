@@ -10,6 +10,18 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Palette Meet42 : mêmes valeurs que le prototype, syntaxe Tailwind v4 */
+  --color-meet-violet: #8B5CF6;
+  --color-meet-violet-deep: #7C3AED;
+  --color-meet-magenta: #D946EF;
+  --color-meet-pink: #EC4899;
+  --color-meet-accent: #EC4899;
+  --color-meet-teal: #14B8A6;
+  --color-meet-amber: #FBBF24;
+
+  /* police des titres, chargée via next/font dans layout.tsx (étape suivante) */
+  --font-display: var(--font-sora);
 }
 
 @media (prefers-color-scheme: dark) {

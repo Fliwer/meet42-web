@@ -1,59 +1,55 @@
-import Link from "next/link";
+'use client'
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import dynamic from "next/dynamic"
+
+const EventsMap = dynamic(() => import("@/components/EventsMap"), { ssr: false });
+
+type EventItem = {
+    id: string;
+    title: string;
+    venue_name: string;
+    starts_at: string;
+    description: string | null;
+    latitude: number;
+    longitude: number;
+};
 
 export default function Home() {
-  return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-12 py-12 sm:flex-row sm:gap-16">
-      <div className="max-w-md text-center sm:text-left">
-        <h1 className="text-4xl font-extrabold leading-tight tracking-tight text-indigo-950">
-          Chaque sortie peut devenir une rencontre.
-        </h1>
-        <p className="mt-4 text-lg text-zinc-600">
-          Découvre les événements de Bruxelles, dis que tu veux y aller, et
-          rejoins un petit groupe pour y aller ensemble. Le différenciateur
-          n&apos;est pas l&apos;agenda — c&apos;est le groupe.
-        </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Link
-            href="/events"
-            className="rounded-md bg-indigo-950 px-6 py-3 text-center text-sm font-semibold text-white hover:bg-indigo-900"
-          >
-            Voir les événements
-          </Link>
-          <Link
-            href="/register"
-            className="rounded-md border border-indigo-950 px-6 py-3 text-center text-sm font-semibold text-indigo-950 hover:bg-indigo-50"
-          >
-            Créer un compte
-          </Link>
+    const [events, setEvents] = useState<EventItem[]>([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/api/events')
+            .then((reponse) => reponse.json())
+            .then((donnees) => setEvents(donnees));
+    }, []);
+
+    return (
+        <div className="flex gap-6">
+            <div className="w-full max-w-sm flex-shrink-0">
+                <h1 className="font-display mb-4 text-2xl font-bold text-zinc-900">Sorties à Bruxelles</h1>
+                <div className="flex h-[75vh] flex-col gap-3 overflow-y-auto pr-2">
+                    {events.map((event) => (
+                        <Link
+                            key={event.id}
+                            href={`/events/${event.id}`}
+                            className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-meet-violet hover:shadow-md"
+                        >
+                            <h2 className="font-semibold text-zinc-900">{event.title}</h2>
+                            <p className="text-sm text-zinc-600">{event.venue_name}</p>
+                            <p className="text-sm text-zinc-400">{event.starts_at}</p>
+                            {event.description && (
+                                <p className="mt-2 line-clamp-2 text-sm text-zinc-500">{event.description}</p>
+                            )}
+                        </Link>
+                    ))}
+                </div>
+            </div>
+
+            <div className="h-[75vh] flex-1 overflow-hidden rounded-xl border border-zinc-200">
+                <EventsMap events={events} />
+            </div>
         </div>
-      </div>
-
-      {/* Illustration en SVG pur : aucune image externe, tout fonctionne hors ligne */}
-      <svg
-        viewBox="0 0 300 300"
-        className="h-64 w-64 flex-shrink-0 sm:h-80 sm:w-80"
-        aria-hidden="true"
-      >
-        <circle cx="150" cy="150" r="130" fill="#EEF2FF" />
-
-        {/* le point de rendez-vous, au centre */}
-        <path
-          d="M150 90 C170 90 185 105 185 125 C185 150 150 190 150 190 C150 190 115 150 115 125 C115 105 130 90 150 90 Z"
-          fill="#F96167"
-        />
-        <circle cx="150" cy="124" r="14" fill="white" />
-
-        {/* les membres du groupe qui convergent vers le point de rendez-vous */}
-        <circle cx="70" cy="80" r="16" fill="#2F3C7E" />
-        <circle cx="230" cy="90" r="16" fill="#2F3C7E" />
-        <circle cx="60" cy="210" r="16" fill="#2F3C7E" />
-        <circle cx="235" cy="215" r="16" fill="#2F3C7E" />
-
-        <path d="M78 92 L130 130" stroke="#C7D2FE" strokeWidth="3" strokeDasharray="6 6" />
-        <path d="M222 100 L172 130" stroke="#C7D2FE" strokeWidth="3" strokeDasharray="6 6" />
-        <path d="M70 198 L128 165" stroke="#C7D2FE" strokeWidth="3" strokeDasharray="6 6" />
-        <path d="M225 203 L174 167" stroke="#C7D2FE" strokeWidth="3" strokeDasharray="6 6" />
-      </svg>
-    </div>
-  );
+    );
 }
