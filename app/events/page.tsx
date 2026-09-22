@@ -21,8 +21,12 @@ export default function EventsPage() {
     }, []);
 
     return (
+        // Cette page n'affiche PAS de carte, volontairement — c'est la version "liste seule",
+        // en grille responsive. La carte + liste ensemble, c'est app/page.tsx (l'accueil).
         <div>
             <h1 className="font-display mb-6 text-2xl font-bold text-zinc-900">Toutes les sorties</h1>
+            {/* grid-cols-1 (mobile) → sm:grid-cols-2 → lg:grid-cols-3 :
+                le nombre de colonnes s'adapte à la largeur d'écran, sans code JS, juste du CSS */}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {events.map((event) => (
                     <Link

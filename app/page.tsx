@@ -4,6 +4,9 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import dynamic from "next/dynamic"
 
+// Leaflet a besoin du navigateur (window, le DOM) pour dessiner la carte —
+// dynamic(..., { ssr: false }) empêche Next.js d'essayer de la générer côté serveur,
+// où window n'existe pas. EventsMap n'est chargé QUE dans le navigateur.
 const EventsMap = dynamic(() => import("@/components/EventsMap"), { ssr: false });
 
 type EventItem = {
@@ -34,9 +37,17 @@ export default function Home() {
 
 
     return (
+        // -mx-6 -my-8 : "sort" du padding imposé par <main> dans layout.tsx (px-6 py-8),
+        // pour que la carte puisse s'étendre jusqu'aux bords de l'écran, pas juste jusqu'aux
+        // bords d'une zone de contenu rétrécie
         <div className="-mx-6 -my-8 flex gap-6">
+            {/* hidden md:block : cachée sur petit écran (mobile), réaffichée à partir de la
+                taille "medium" (ordinateur/tablette) — sur mobile, la carte prend toute la place seule */}
             <div className="hidden w-full max-w-sm flex-shrink-0 pl-6 pt-8 md:block">
                 <h1 className="font-display mb-4 text-2xl font-bold text-zinc-900">Sorties à Bruxelles</h1>
+                {/* h-[85vh] : hauteur fixe en "pourcentage de la fenêtre visible" — plus fiable
+                    ici qu'un h-full en pourcentage, qui casserait car <body> n'a pas de hauteur
+                    fixe (juste un min-height) */}
                 <div className="flex h-[85vh] flex-col gap-3 overflow-y-auto pr-2">
                     {events.map((event) => (
                         <Link
@@ -55,7 +66,11 @@ export default function Home() {
                 </div>
             </div>
 
+            {/* flex-1 : prend tout l'espace restant à côté de la liste (ou tout l'écran, sur mobile,
+                puisque la liste est cachée) */}
             <div className="h-[85vh] flex-1 overflow-hidden rounded-xl border border-zinc-200">
+                {/* events passé en prop : EventsMap ne va JAMAIS chercher les données lui-même,
+                    il se contente d'afficher ce qu'on lui donne */}
                 <EventsMap events={events} />
             </div>
         </div>
