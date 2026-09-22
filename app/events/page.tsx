@@ -10,6 +10,7 @@ type EventItem = {
     title: string;
     venue_name: string;
     starts_at: string;
+    description: string | null; // certains événements importés n'en ont pas
 
 };
 
@@ -29,14 +30,24 @@ export default function EventsPage() {
 
     return (
         <div>
-            <h1>Les événements</h1>
-            {events.map((event) => (
-                <Link key={event.id} href={`/events/${event.id}`}>
-                    <h2>{event.title}</h2>
-                    <p>{event.venue_name}</p>
-                    <p>{event.starts_at}</p>
-                </Link>
-            ))}
+            <h1 className="mb-6 text-2xl font-bold text-indigo-950">Les événements</h1>
+            <div className="flex flex-col gap-3">
+                {events.map((event) => (
+                    <Link
+                        key={event.id}
+                        href={`/events/${event.id}`}
+                        className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm transition hover:border-indigo-300 hover:shadow-md"
+                    >
+                        <h2 className="font-semibold text-indigo-950">{event.title}</h2>
+                        <p className="text-sm text-zinc-600">{event.venue_name}</p>
+                        <p className="text-sm text-zinc-400">{event.starts_at}</p>
+                        {/* line-clamp-2 : coupe le texte après 2 lignes, avec "..." — évite qu'une longue description casse la mise en page */}
+                        {event.description && (
+                            <p className="mt-2 line-clamp-2 text-sm text-zinc-500">{event.description}</p>
+                        )}
+                    </Link>
+                ))}
+            </div>
         </div>
     );
 }
