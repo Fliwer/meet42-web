@@ -180,7 +180,6 @@ export default function EventGroupsPage({ params }: { params: Promise<{ id: stri
                             {group.description && (
                                 <p className="mt-1 text-sm italic text-zinc-500">&laquo; {group.description} &raquo;</p>
                             )}
-                            <p className="mt-1 text-xs font-semibold text-[#F96167]">{group.memberCount}p / {group.max_participants}max</p>
                         </div>
                         <button
                             onClick={() => handleJoin(group.id)}
